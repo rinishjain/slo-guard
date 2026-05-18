@@ -9,7 +9,7 @@ description = "SRE alerting engine: burn-rate alerting, deduplication, and SLO t
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "SRE Team" }]
+authors = [{ name = "Rinish Jain" }]
 
 # No runtime dependencies — stdlib only (zoneinfo is built in from Python 3.9+)
 dependencies = []
@@ -34,6 +34,13 @@ include = ["slo_guard*"]
 testpaths    = ["tests"]
 addopts      = "-v --tb=short"
 python_files = "test_*.py"
+
+# ── coverage ─────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+omit = ["slo_guard/cli.py"]
+
+[tool.coverage.report]
+omit = ["slo_guard/cli.py"]
 
 # ── ruff ──────────────────────────────────────────────────────────────────────
 [tool.ruff]

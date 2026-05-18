@@ -1,17 +1,14 @@
 """Unit tests for burnrate/engine.py — burn-rate math and alert logic."""
-import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
-import pytest
-
-from slo_guard.burnrate.engine import BurnRateEngine, burn_rate, SLO_AVAILABILITY
+from slo_guard.burnrate.engine import BurnRateEngine, burn_rate
 from slo_guard.model.alert import AlertType, SLOType
 from slo_guard.model.events import HTTPMinute
 from slo_guard.window.store import WindowStore
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
-BASE_TS = datetime(2026, 5, 15, 12, 0, 0, tzinfo=timezone.utc)
+BASE_TS = datetime(2026, 5, 15, 12, 0, 0, tzinfo=UTC)
 
 
 def make_event(
@@ -93,7 +90,7 @@ class TestBurnRateEngineNoAlert:
         # Feed 5 minutes of high errors (will breach 5m but not 1h)
         for i in range(5):
             event = make_event(offset_minutes=i, total=10000, http_5xx=200)
-            alerts = list(engine.evaluate(event))
+            list(engine.evaluate(event))
         # No PAGE because 1h window is identical to 5m window here —
         # however the 1h long threshold is 6x and the same data should trigger,
         # so let's use a boundary case: only 1 minute of data

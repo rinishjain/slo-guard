@@ -4,30 +4,30 @@ Alert output model for slo-guard.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 
-class AlertType(str, Enum):
+class AlertType(StrEnum):
     PAGE   = "page"
     TICKET = "ticket"
 
 
-class SLOType(str, Enum):
+class SLOType(StrEnum):
     AVAILABILITY  = "availability"
     LATENCY       = "latency"
     NAV_FRESHNESS = "nav_freshness"
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     SEV1 = "sev1"
     SEV2 = "sev2"
     SEV3 = "sev3"
 
     @classmethod
-    def for_alert_type(cls, alert_type: AlertType) -> "Severity":
+    def for_alert_type(cls, alert_type: AlertType) -> Severity:
         return cls.SEV2 if alert_type == AlertType.PAGE else cls.SEV3
 
 

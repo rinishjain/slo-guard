@@ -64,7 +64,7 @@ def test_scenario(name, input_path, expected_path):
         f"Actual: {actual_alerts}"
     )
 
-    for i, (actual, expected) in enumerate(zip(actual_alerts, expected_alerts)):
+    for i, (actual, expected) in enumerate(zip(actual_alerts, expected_alerts, strict=True)):
         for key in expected:
             assert key in actual, (
                 f"[{name}] Alert {i}: missing field '{key}'"
