@@ -1,3 +1,3 @@
-from .store import WindowStore, WindowState, WindowSlot
+from .store import WindowSlot, WindowState, WindowStore
 
 __all__ = ["WindowStore", "WindowState", "WindowSlot"]

@@ -9,9 +9,8 @@ Alert tiers:
 """
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Iterator
 
 from slo_guard.model.alert import Alert, AlertType, Severity, SLOType
 from slo_guard.model.events import HTTPMinute

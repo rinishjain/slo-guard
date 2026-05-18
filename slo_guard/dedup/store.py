@@ -6,7 +6,7 @@ combination for 30 minutes after the first emission.
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from slo_guard.model.alert import Alert
 

@@ -1,12 +1,10 @@
 """Unit tests for dedup/store.py — 30-minute alert suppression."""
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
-import pytest
-
-from slo_guard.dedup.store import DeduplicationStore, SUPPRESSION_WINDOW
+from slo_guard.dedup.store import SUPPRESSION_WINDOW, DeduplicationStore
 from slo_guard.model.alert import Alert, AlertType, Severity, SLOType
 
-BASE_TS = datetime(2026, 5, 15, 12, 0, 0, tzinfo=timezone.utc)
+BASE_TS = datetime(2026, 5, 15, 12, 0, 0, tzinfo=UTC)
 
 
 def make_alert(

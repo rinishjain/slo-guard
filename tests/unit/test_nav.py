@@ -1,11 +1,9 @@
 """Unit tests for nav/checker.py — NAV freshness SLO."""
-from datetime import datetime, timezone
-
-import pytest
+from datetime import datetime
 
 from slo_guard.model.alert import AlertType, SLOType
 from slo_guard.model.events import NAVPublish
-from slo_guard.nav.checker import NAVChecker, NAV_CUTOFF
+from slo_guard.nav.checker import NAVChecker
 
 
 def make_nav(ts_iso: str, status: str = "published", region: str = "HK") -> NAVPublish:

@@ -8,9 +8,8 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import NamedTuple
-
 
 # Maximum window we ever need is 6 hours
 MAX_WINDOW_MINUTES = 360

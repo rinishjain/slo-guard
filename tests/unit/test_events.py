@@ -1,11 +1,9 @@
 """Unit tests for model/events.py — parser and event types."""
 import json
-from datetime import datetime, timezone
 
 import pytest
 
 from slo_guard.model.events import HTTPMinute, NAVPublish, parse_event
-
 
 # ── HTTPMinute ────────────────────────────────────────────────────────────────
 

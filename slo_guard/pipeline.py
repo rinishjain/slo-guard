@@ -8,8 +8,8 @@ Wires together: parser → window store → burn-rate engine
 from __future__ import annotations
 
 import sys
-from datetime import timezone
-from typing import IO, Iterator
+from collections.abc import Iterator
+from typing import IO
 
 from slo_guard.burnrate.engine import BurnRateEngine
 from slo_guard.dedup.store import DeduplicationStore

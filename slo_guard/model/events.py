@@ -8,8 +8,8 @@ Two event types are supported:
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass
+from datetime import UTC, datetime
 from typing import Any
 
 
@@ -48,12 +48,12 @@ class HTTPMinute:
     # ── construction ────────────────────────────────────────────────────────
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "HTTPMinute":
+    def from_dict(cls, d: dict[str, Any]) -> HTTPMinute:
         ts_raw = d["ts"]
         if isinstance(ts_raw, str):
             ts = datetime.fromisoformat(ts_raw)
             if ts.tzinfo is None:
-                ts = ts.replace(tzinfo=timezone.utc)
+                ts = ts.replace(tzinfo=UTC)
         else:
             ts = ts_raw
 
@@ -83,12 +83,12 @@ class NAVPublish:
     status: str           # e.g. "published"
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "NAVPublish":
+    def from_dict(cls, d: dict[str, Any]) -> NAVPublish:
         ts_raw = d["ts"]
         if isinstance(ts_raw, str):
             ts = datetime.fromisoformat(ts_raw)
             if ts.tzinfo is None:
-                ts = ts.replace(tzinfo=timezone.utc)
+                ts = ts.replace(tzinfo=UTC)
         else:
             ts = ts_raw
 

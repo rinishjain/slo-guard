@@ -51,7 +51,7 @@ def main() -> None:
     # ── open streams ──────────────────────────────────────────────────────
     if args.input:
         try:
-            input_stream = open(args.input, "r", encoding="utf-8")
+            input_stream = open(args.input, encoding="utf-8")
         except FileNotFoundError:
             print(f"slo-guard: input file not found: {args.input}", file=sys.stderr)
             sys.exit(1)

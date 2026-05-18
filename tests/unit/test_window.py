@@ -1,7 +1,5 @@
 """Unit tests for window/store.py — rolling window ring buffer."""
-from datetime import datetime, timedelta, timezone
-
-import pytest
+from datetime import UTC, datetime, timedelta
 
 from slo_guard.window.store import WindowSlot, WindowState, WindowStore
 
@@ -9,7 +7,7 @@ from slo_guard.window.store import WindowSlot, WindowState, WindowStore
 
 def ts(offset_minutes: int = 0) -> datetime:
     """Return a timezone-aware UTC datetime at a fixed base + offset."""
-    base = datetime(2026, 5, 15, 12, 0, 0, tzinfo=timezone.utc)
+    base = datetime(2026, 5, 15, 12, 0, 0, tzinfo=UTC)
     return base + timedelta(minutes=offset_minutes)
 
 
