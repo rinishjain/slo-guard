@@ -54,9 +54,9 @@ class Pipeline:
 
         elif isinstance(event, NAVPublish):
             now = event.ts
-            alert = self._nav_checker.evaluate(event)
-            if alert and self._dedup.should_emit(alert, now):
-                yield alert
+            nav_alert = self._nav_checker.evaluate(event)
+            if nav_alert and self._dedup.should_emit(nav_alert, now):
+                yield nav_alert
 
     def process_stream(self, stream: IO[str]) -> Iterator[Alert]:
         """Process all lines from a text stream."""

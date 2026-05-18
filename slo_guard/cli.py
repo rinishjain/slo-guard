@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from typing import IO
 
 from slo_guard.pipeline import run
 
@@ -49,6 +50,9 @@ def main() -> None:
     args = parser.parse_args()
 
     # ── open streams ──────────────────────────────────────────────────────
+    input_stream: IO[str]
+    output_stream: IO[str]
+
     if args.input:
         try:
             input_stream = open(args.input, encoding="utf-8")
