@@ -1,0 +1,5 @@
+{"type": "http_minute", "ts": "2026-05-15T09:50:00+00:00", "service": "xyz_web", "region": "HK", "total": 10000, "http_5xx": 200, "latency_buckets_ms": {"500": 9800, "1000": 10000, "2000": 10000}}
+{"type": "http_minute", "ts": "2026-05-15T09:51:00+00:00", "service": "xyz_web", "region": "HK", "total": 10000, "http_5xx": 200, "latency_buckets_ms": {"500": 9800, "1000": 10000, "2000": 10000}}
+{"type": "http_minute", "ts": "2026-05-15T09:52:00+00:00", "service": "xyz_web", "region": "HK", "total": 10000, "http_5xx": 200, "latency_buckets_ms": {"500": 9800, "1000": 10000, "2000": 10000}}
+{"type": "http_minute", "ts": "2026-05-15T09:53:00+00:00", "service": "xyz_web", "region": "HK", "total": 10000, "http_5xx": 200, "latency_buckets_ms": {"500": 9800, "1000": 10000, "2000": 10000}}
+{"type": "http_minute", "ts": "2026-05-15T09:54:00+00:00", "service": "xyz_web", "region": "HK", "total": 10000, "http_5xx": 200, "latency_buckets_ms": {"500": 9800, "1000": 10000, "2000": 10000}}
