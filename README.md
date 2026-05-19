@@ -13,6 +13,15 @@ SRE alerting engine that reads telemetry (JSONL) and emits SLO-based alerts usin
 - **Zero runtime dependencies** — Python 3.11+ standard library only
 
 ---
+Assumptions
+- Input JSONL arrives in chronological order; out-of-order event handling is out of scope for v1.
+- The tool runs in-process with in-memory state; persistence across restarts is not required.
+- Region-to-timezone mapping (e.g. HK → Asia/Hong_Kong) is provided as a static config; dynamic mapping is out of scope.
+- Alert routing (team names per service) is defined in a simple config file; complex routing logic is out of scope.
+- NAV freshness SLO applies only to events with status = “published”; other statuses are ignored.
+- SLO targets (99.9% availability, 500 ms latency threshold) are fixed constants, not runtime-configurable in v1.
+- The CI environment has outbound internet access for downloading vulnerability databases.
+- NAV is a business term (Net Asset Value) referring to a scheduled daily publication event; it has no special SRE-standard meaning.
 
 ## Quick start
 
