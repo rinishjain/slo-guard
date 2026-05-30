@@ -21,6 +21,7 @@ import argparse
 import sys
 from typing import IO
 
+from slo_guard.config import DEFAULT_CONFIG, load_config
 from slo_guard.pipeline import run
 
 
@@ -40,6 +41,12 @@ def main() -> None:
         metavar="FILE",
         default=None,
         help="Output JSONL file (default: stdout)",
+    )
+    parser.add_argument(
+        "--config", "-c",
+        metavar="FILE",
+        default=None,
+        help="YAML config file (default: built-in defaults)",
     )
     parser.add_argument(
         "--verbose", "-v",
@@ -67,9 +74,19 @@ def main() -> None:
     else:
         output_stream = sys.stdout
 
+    # ── load config ───────────────────────────────────────────────────────
+    if args.config:
+        try:
+            config = load_config(args.config)
+        except FileNotFoundError:
+            print(f"slo-guard: config file not found: {args.config}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        config = DEFAULT_CONFIG
+
     # ── run ───────────────────────────────────────────────────────────────
     try:
-        run(input_stream=input_stream, output_stream=output_stream)
+        run(input_stream=input_stream, output_stream=output_stream, config=config)
     finally:
         if args.input:
             input_stream.close()

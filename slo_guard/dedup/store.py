@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 from slo_guard.model.alert import Alert
 
-SUPPRESSION_WINDOW = timedelta(minutes=30)
+SUPPRESSION_WINDOW = timedelta(minutes=20)
 
 
 class DeduplicationStore:
@@ -20,7 +20,8 @@ class DeduplicationStore:
     Thread-safety: NOT thread-safe. Single-threaded use only.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, suppression_window: timedelta = SUPPRESSION_WINDOW) -> None:
+        self._suppression_window = suppression_window
         # Maps dedupe_key -> expiry datetime (wall clock, UTC)
         self._expiry: dict[str, datetime] = {}
 
@@ -43,7 +44,7 @@ class DeduplicationStore:
 
         Sets the suppression expiry to now + SUPPRESSION_WINDOW.
         """
-        self._expiry[alert.dedupe_key] = now + SUPPRESSION_WINDOW
+        self._expiry[alert.dedupe_key] = now + self._suppression_window
 
     def should_emit(self, alert: Alert, now: datetime) -> bool:
         """

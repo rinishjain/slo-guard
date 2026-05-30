@@ -1,0 +1,38 @@
+slo:
+  availability_target: 0.999
+  latency_target: 0.999
+
+nav:
+  # Local time cutoff after which NAV publish is considered late (HH:MM)
+  cutoff: "18:00"
+  region_timezones:
+    HK: "Asia/Hong_Kong"
+    SG: "Asia/Singapore"
+    JP: "Asia/Tokyo"
+    AU: "Australia/Sydney"
+    IN: "Asia/Kolkata"
+    UK: "Europe/London"
+    EU: "Europe/Paris"
+    US: "America/New_York"
+
+burnrate:
+  rules:
+    - alert_type: page
+      short_minutes: 3
+      short_threshold: 12.0
+      long_minutes: 60
+      long_threshold: 3.0
+      window_pair: "5m+1h"
+    - alert_type: ticket
+      short_minutes: 30
+      short_threshold: 3.0
+      long_minutes: 360
+      long_threshold: 1.0
+      window_pair: "60m+6h"
+
+dedup:
+  suppression_window_minutes: 20
+
+window:
+  # Maximum history retained per (service, region, slo) — must be >= longest rule window
+  max_window_minutes: 360

@@ -32,15 +32,23 @@ class NAVChecker:
     """
     Evaluates NAV freshness SLO for each nav_publish event.
 
-    Yields an Alert if the event's local publish time exceeds the 18:00 cutoff.
+    Yields an Alert if the event's local publish time exceeds the cutoff.
     Only events with status == "published" are evaluated.
     """
+
+    def __init__(
+        self,
+        cutoff: time = NAV_CUTOFF,
+        region_timezones: dict[str, str] = REGION_TIMEZONES,
+    ) -> None:
+        self._cutoff = cutoff
+        self._region_timezones = region_timezones
 
     def evaluate(self, event: NAVPublish) -> Alert | None:
         if event.status != "published":
             return None
 
-        tz_name = REGION_TIMEZONES.get(event.region.upper())
+        tz_name = self._region_timezones.get(event.region.upper())
         if tz_name is None:
             # Unknown region — cannot determine local time; skip safely
             return None
@@ -53,7 +61,7 @@ class NAVChecker:
         local_ts = event.ts.astimezone(tz)
         local_time = local_ts.time()
 
-        if local_time > NAV_CUTOFF:
+        if local_time > self._cutoff:
             return self._make_alert(event)
 
         return None

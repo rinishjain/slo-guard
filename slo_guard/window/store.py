@@ -7,7 +7,6 @@ Supports querying any sub-window up to the maximum retention period.
 from __future__ import annotations
 
 from collections import deque
-from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import NamedTuple
 
@@ -22,24 +21,22 @@ class WindowSlot(NamedTuple):
     errors: int   # meaning depends on SLO (5xx count OR slow_requests count)
 
 
-@dataclass
 class WindowState:
     """
     Sliding window state for a single (service, region, slo) combination.
 
     Internally stores individual minute slots in a deque ordered oldest→newest.
-    Eviction happens lazily on every insert: slots older than MAX_WINDOW_MINUTES
+    Eviction happens lazily on every insert: slots older than max_window_minutes
     are discarded before the new slot is appended.
     """
 
-    _slots: deque[WindowSlot] = None  # type: ignore[assignment]
-
-    def __post_init__(self) -> None:
-        self._slots = deque()
+    def __init__(self, max_window_minutes: int = MAX_WINDOW_MINUTES) -> None:
+        self._max_window_minutes = max_window_minutes
+        self._slots: deque[WindowSlot] = deque()
 
     def add(self, slot: WindowSlot) -> None:
-        """Append a new slot, evicting any data older than MAX_WINDOW_MINUTES."""
-        cutoff = slot.ts - timedelta(minutes=MAX_WINDOW_MINUTES)
+        """Append a new slot, evicting any data older than max_window_minutes."""
+        cutoff = slot.ts - timedelta(minutes=self._max_window_minutes)
         while self._slots and self._slots[0].ts <= cutoff:
             self._slots.popleft()
         self._slots.append(slot)
@@ -83,7 +80,8 @@ class WindowStore:
     determines which error counter is tracked.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, max_window_minutes: int = MAX_WINDOW_MINUTES) -> None:
+        self._max_window_minutes = max_window_minutes
         self._store: dict[tuple[str, str, str], WindowState] = {}
 
     def _key(self, service: str, region: str, slo: str) -> tuple[str, str, str]:
@@ -92,7 +90,7 @@ class WindowStore:
     def _get_or_create(self, service: str, region: str, slo: str) -> WindowState:
         key = self._key(service, region, slo)
         if key not in self._store:
-            self._store[key] = WindowState()
+            self._store[key] = WindowState(self._max_window_minutes)
         return self._store[key]
 
     def record(

@@ -37,15 +37,15 @@ class AlertRule:
 RULES: list[AlertRule] = [
     AlertRule(
         alert_type=AlertType.PAGE,
-        short_minutes=5,  short_threshold=14.0,
-        long_minutes=60,  long_threshold=6.0,
+        short_minutes=3,  short_threshold=12.0,
+        long_minutes=60,  long_threshold=3.0,
         window_pair="5m+1h",
     ),
     AlertRule(
         alert_type=AlertType.TICKET,
         short_minutes=30, short_threshold=3.0,
         long_minutes=360, long_threshold=1.0,
-        window_pair="30m+6h",
+        window_pair="60m+6h",
     ),
 ]
 
@@ -75,8 +75,17 @@ class BurnRateEngine:
     for any rules that are currently breaching.
     """
 
-    def __init__(self, store: WindowStore) -> None:
+    def __init__(
+        self,
+        store: WindowStore,
+        rules: list[AlertRule] = RULES,
+        slo_availability: float = SLO_AVAILABILITY,
+        slo_latency: float = SLO_LATENCY,
+    ) -> None:
         self._store = store
+        self._rules = rules
+        self._slo_availability = slo_availability
+        self._slo_latency = slo_latency
 
     def evaluate(
         self,
@@ -107,10 +116,10 @@ class BurnRateEngine:
         )
 
         for slo_label, slo_target, slo_type in [
-            ("availability", SLO_AVAILABILITY, SLOType.AVAILABILITY),
-            ("latency",      SLO_LATENCY,      SLOType.LATENCY),
+            ("availability", self._slo_availability, SLOType.AVAILABILITY),
+            ("latency",      self._slo_latency,      SLOType.LATENCY),
         ]:
-            for rule in RULES:
+            for rule in self._rules:
                 short_rate = self._store.error_rate(
                     event.service, event.region, slo_label,
                     rule.short_minutes, event.ts,

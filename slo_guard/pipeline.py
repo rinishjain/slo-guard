@@ -12,6 +12,7 @@ from collections.abc import Iterator
 from typing import IO
 
 from slo_guard.burnrate.engine import BurnRateEngine
+from slo_guard.config import DEFAULT_CONFIG, Config
 from slo_guard.dedup.store import DeduplicationStore
 from slo_guard.model.alert import Alert
 from slo_guard.model.events import HTTPMinute, NAVPublish, parse_event
@@ -29,11 +30,19 @@ class Pipeline:
             print(alert.to_jsonl())
     """
 
-    def __init__(self) -> None:
-        self._window_store  = WindowStore()
-        self._burn_engine   = BurnRateEngine(self._window_store)
-        self._nav_checker   = NAVChecker()
-        self._dedup         = DeduplicationStore()
+    def __init__(self, config: Config = DEFAULT_CONFIG) -> None:
+        self._window_store = WindowStore(config.max_window_minutes)
+        self._burn_engine  = BurnRateEngine(
+            self._window_store,
+            rules=config.burnrate_rules,
+            slo_availability=config.slo_availability,
+            slo_latency=config.slo_latency,
+        )
+        self._nav_checker  = NAVChecker(
+            cutoff=config.nav_cutoff,
+            region_timezones=config.region_timezones,
+        )
+        self._dedup        = DeduplicationStore(config.suppression_window)
 
     def process_line(self, line: str) -> Iterator[Alert]:
         """Parse one JSONL line and yield any alerts that should be emitted."""
@@ -64,9 +73,13 @@ class Pipeline:
             yield from self.process_line(line)
 
 
-def run(input_stream: IO[str] = sys.stdin, output_stream: IO[str] = sys.stdout) -> None:
+def run(
+    input_stream: IO[str] = sys.stdin,
+    output_stream: IO[str] = sys.stdout,
+    config: Config = DEFAULT_CONFIG,
+) -> None:
     """Main entry point: read JSONL from input, write alerts to output."""
-    pipeline = Pipeline()
+    pipeline = Pipeline(config)
     for alert in pipeline.process_stream(input_stream):
         output_stream.write(alert.to_jsonl() + "\n")
         output_stream.flush()

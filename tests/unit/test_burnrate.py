@@ -10,7 +10,6 @@ from slo_guard.window.store import WindowStore
 
 BASE_TS = datetime(2026, 5, 15, 12, 0, 0, tzinfo=UTC)
 
-
 def make_event(
     offset_minutes: int = 0,
     total: int = 10000,
@@ -90,7 +89,7 @@ class TestBurnRateEngineNoAlert:
         # Feed 5 minutes of high errors (will breach 5m but not 1h)
         for i in range(5):
             event = make_event(offset_minutes=i, total=10000, http_5xx=200)
-            list(engine.evaluate(event))
+            alerts = list(engine.evaluate(event))
         # No PAGE because 1h window is identical to 5m window here —
         # however the 1h long threshold is 6x and the same data should trigger,
         # so let's use a boundary case: only 1 minute of data
@@ -186,7 +185,7 @@ class TestTicketAlert:
             event = make_event(offset_minutes=i, total=10000, http_5xx=50)
             alerts.extend(engine.evaluate(event))
         ticket_alerts = [a for a in alerts if a.alert_type == AlertType.TICKET]
-        assert all(a.window_pair == "30m+6h" for a in ticket_alerts)
+        assert all(a.window_pair == "60m+6h" for a in ticket_alerts)
 
     def test_ticket_severity_is_sev3(self):
         engine = make_engine()

@@ -52,15 +52,15 @@ class TestDeduplicationStore:
     def test_suppressed_within_window(self):
         alert = make_alert()
         self.store.record(alert, BASE_TS)
-        # 29 minutes later — still within 30-minute window
-        later = BASE_TS + timedelta(minutes=29)
+        # 19 minutes later — still within 20-minute window
+        later = BASE_TS + timedelta(minutes=19)
         assert self.store.is_suppressed(alert, later) is True
 
     def test_suppression_expires_after_window(self):
         alert = make_alert()
         self.store.record(alert, BASE_TS)
-        # 30 minutes + 1 second later — suppression expired
-        after = BASE_TS + timedelta(minutes=30, seconds=1)
+        # 20 minutes + 1 second later — suppression expired
+        after = BASE_TS + timedelta(minutes=20, seconds=1)
         assert self.store.is_suppressed(alert, after) is False
 
     def test_suppression_expires_exactly_at_boundary(self):
@@ -122,4 +122,4 @@ class TestDeduplicationStore:
         assert alert.dedupe_key in self.store.active_keys
 
     def test_suppression_window_duration(self):
-        assert SUPPRESSION_WINDOW == timedelta(minutes=30)
+        assert SUPPRESSION_WINDOW == timedelta(minutes=20)
